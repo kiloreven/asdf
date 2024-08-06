@@ -1,0 +1,98 @@
+[tool.poetry]
+name = "asdf"
+version = "0.1.0"
+description = ""
+authors = [
+  "Karl Fredrik Haugland <kfh@tla.wtf>",
+]
+
+[tool.poetry.dependencies]
+python = '^3.12'
+django = "^5.0.8"
+psycopg-binary = "^3.2.1"
+psycopg2-binary = "^2.9.9"
+pydantic = "^2.8.2"
+ipython = "^8.26.0"
+
+
+[tool.black]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | __pycache__
+  | migrations
+  | \.venv
+)/
+'''
+
+[tool.ruff]
+line-length = 120 # must be same as black
+exclude = [
+  ".git",
+  ".github",
+  ".venv",
+  "__pycache__",
+  "migrations",
+  "node_modules",
+  "temp-deploy",
+]
+[tool.ruff.lint]
+select = ["C", "E", "F", "W", "B", "I"]
+ignore = [
+  "B905", # `zip()` without an explicit `strict=` parameter
+  "C408", # Unnecessary `dict` call (rewrite as a literal)
+  "B904", # raise ... from err
+]
+
+[tool.mypy]
+allow_untyped_globals = true
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+exclude = ['\.venv', 'temp-deploy', '.github', '\.deploy']
+files = '**/*.py'
+follow_imports = "normal"
+ignore_missing_imports = true
+plugins = ["mypy_django_plugin.main", "pydantic.mypy"]
+pretty = false # Set to "false" to handle bug in PyCharm's mypy tool
+python_version = "3.11"
+show_column_numbers = true
+show_error_codes = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unused_ignores = false
+
+# Ignore typing errors in migrations and tests
+[[tool.mypy.overrides]]
+ignore_errors = true
+check_untyped_defs = false
+disallow_any_unimported = false
+disallow_incomplete_defs = false
+disallow_subclassing_any = false
+disallow_untyped_calls = false
+disallow_untyped_decorators = false
+disallow_untyped_defs = false
+warn_return_any = false
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_untyped_fields = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["asdf"]
+addopts = ["--reuse-db"]
+filterwarnings = [
+  "ignore::DeprecationWarning",
+  "ignore::RuntimeWarning:",
+  "ignore::django.utils.deprecation.RemovedInDjango51Warning",
+  "ignore::SyntaxWarning:multiselectfield",
+]
+markers = []
+pythonpath = [".", "asdf"]
+DJANGO_SETTINGS_MODULE = "asdf.settings"
